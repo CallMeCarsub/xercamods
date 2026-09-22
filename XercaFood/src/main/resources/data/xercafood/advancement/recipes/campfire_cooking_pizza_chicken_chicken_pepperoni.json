@@ -1,0 +1,40 @@
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercafood:campfire_cooking_pizza_chicken_chicken_pepperoni"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/campfire_cooking_pizza_chicken_chicken_pepperoni.json
+          {"items": ["xercafood:raw_pizza_chicken_chicken_pepperoni"]}
+========
+          {
+            "items": "xercafood:raw_pizza_chicken_chicken_pepperoni"
+          }
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/campfire_cooking_pizza_chicken_chicken_pepperoni.json
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercafood:campfire_cooking_pizza_chicken_chicken_pepperoni"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/campfire_cooking_pizza_chicken_chicken_pepperoni.json
+        
+========
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/campfire_cooking_pizza_chicken_chicken_pepperoni.json

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "b",
+    "h",
+    "b"
+  ],
+  "key": {
+    "b": "minecraft:bread",
+    "h": "minecraft:cooked_cod"
+  },
+  "result": {
+    "id": "xercafood:fish_bread",
+    "count": 2
+  }
+}

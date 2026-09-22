@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  g",
+    "gg ",
+    "gg "
+  ],
+  "key": {
+    "g": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "xercamusic:trumpet"
+  }
+}

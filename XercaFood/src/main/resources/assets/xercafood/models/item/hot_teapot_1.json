@@ -1,0 +1,10 @@
+{
+	"parent": "item/generated",
+	"textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/item_full_teacup_0.json
+		"layer0": "xercafood:item/tea/full_teacup"
+========
+		"layer0": "xercafood:item/tea/hot_teapot"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/hot_teapot_1.json
+	}
+}

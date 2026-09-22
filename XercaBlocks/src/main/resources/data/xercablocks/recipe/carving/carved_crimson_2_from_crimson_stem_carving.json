@@ -1,0 +1,8 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": "minecraft:crimson_stem",
+  "result": {
+    "id": "xercablocks:carved_crimson_2",
+    "count": 1
+  }
+}

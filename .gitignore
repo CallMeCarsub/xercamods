@@ -1,9 +1,14 @@
 */out
 */build
+build/
 */bin
 .gradle/
 run/
 .idea/
 builds/
+*.md
 desktop.ini
 **/.cache
+.sonar.ps1
+__pycache__/
+*.pyc

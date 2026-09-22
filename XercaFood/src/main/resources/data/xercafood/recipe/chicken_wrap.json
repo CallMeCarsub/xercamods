@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "chicken_wrap",
+  "pattern": [
+    " wc",
+    "wcw",
+    "cw "
+  ],
+  "key": {
+    "c": "minecraft:cooked_chicken",
+    "w": "minecraft:wheat"
+  },
+  "result": {
+    "id": "xercafood:chicken_wrap",
+    "count": 4
+  }
+}

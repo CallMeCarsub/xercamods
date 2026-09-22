@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": "minecraft:milk_bucket",
+  "result": {
+    "id": "xercafood:yoghurt"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
+}

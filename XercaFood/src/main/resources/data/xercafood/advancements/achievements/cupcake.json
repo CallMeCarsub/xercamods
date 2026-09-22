@@ -1,7 +1,11 @@
 {
   "display": {
     "icon": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/cupcake.json
       "item": "xercafood:item_golden_cupcake"
+========
+      "id": "xercafood:golden_cupcake"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/cupcake.json
     },
     "title": {
       "translate": "advancements.xercafood.achievements.cupcake.title",
@@ -19,10 +23,15 @@
       "conditions": {
         "items": [
           {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/cupcake.json
             "items": ["xercafood:item_golden_cupcake"]
+========
+            "items": ["xercafood:golden_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/cupcake.json
           }
         ]
       }
     }
   }
 }
+

@@ -1,16 +1,18 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockInstrument;
@@ -18,11 +20,12 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 
 public class GuiInstrument extends Screen {
-    private static final ResourceLocation INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
+    private static final Identifier INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
     private static final int GUI_HEIGHT = 201;
     private static final int GUI_WIDTH = 401;
     private static final int GUI_MARGIN_WIDTH = 7;
@@ -76,7 +79,7 @@ public class GuiInstrument extends Screen {
         } else if (currentKeyboardOctave > instrument.getMaxOctave()) {
             currentKeyboardOctave = instrument.getMaxOctave();
         }
-        midiHandler.currentOctave = currentKeyboardOctave;
+        midiHandler.setCurrentOctave(currentKeyboardOctave);
 
         this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> increaseOctave()).
                 bounds(octaveButtonX, OCTAVE_BUTTON_Y, 10, 10).
@@ -90,27 +93,26 @@ public class GuiInstrument extends Screen {
     @Override
     public void tick() {
         super.tick();
-        if (blockInsPos != null && minecraft != null) {
+        Minecraft client = minecraft;
+        if (blockInsPos != null && client != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
-                if (blockIns.getItemInstrument() != instrument) {
-                    minecraft.setScreen(null);
+                if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
+                    client.setScreen(null);
                 }
             } else {
-                minecraft.setScreen(null);
+                client.setScreen(null);
             }
         }
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         // All rendering is handled in render()
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, INS_GUI_TEXTURES);
-
-        guiGraphics.blit(INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
 
         for (int i = 0; i < buttonPushStates.length; i++) {
             if (buttonPushStates[i]) {
@@ -121,7 +123,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 + 48 * GUI_NOTE_WIDTH;
                     y = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP + 2;
                 }
-                guiGraphics.blit(INS_GUI_TEXTURES, x, y, 0, 402, 11, 7, 82, 512, 512);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, INS_GUI_TEXTURES, x, y, 402, 11, 7, 82, 512, 512);
             }
         }
 
@@ -132,7 +134,7 @@ public class GuiInstrument extends Screen {
             octaveHighlightX -= 4 * GUI_OCTAVE_WIDTH;
             octaveHighlightY = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP - 6;
         }
-        guiGraphics.blit(INS_GUI_TEXTURES, octaveHighlightX, octaveHighlightY, 0, 0, 0, GUI_OCTAVE_HIGHLIGHT_Y, GUI_OCTAVE_HIGHLIGHT_WIDTH, GUI_OCTAVE_HIGHLIGHT_HEIGHT, 512, 512);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, INS_GUI_TEXTURES, octaveHighlightX, octaveHighlightY, 0, GUI_OCTAVE_HIGHLIGHT_Y, GUI_OCTAVE_HIGHLIGHT_WIDTH, GUI_OCTAVE_HIGHLIGHT_HEIGHT, 512, 512);
 
         for (int i = 0; i < 8; i++) {
             if (i < instrument.getMinOctave() || i > instrument.getMaxOctave()) {
@@ -142,7 +144,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 * GUI_OCTAVE_WIDTH;
                     y = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP + 2;
                 }
-                guiGraphics.blit(INS_GUI_TEXTURES, x, y, 0, 0, GUI_OCTAVE_BLOCK_X, GUI_OCTAVE_BLOCK_Y, GUI_OCTAVE_BLOCK_WIDTH, GUI_OCTAVE_BLOCK_HEIGHT, 512, 512);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, INS_GUI_TEXTURES, x, y, GUI_OCTAVE_BLOCK_X, GUI_OCTAVE_BLOCK_Y, GUI_OCTAVE_BLOCK_WIDTH, GUI_OCTAVE_BLOCK_HEIGHT, 512, 512);
             }
         }
 
@@ -179,7 +181,7 @@ public class GuiInstrument extends Screen {
             if (noteSound == null) {
                 return;
             }
-            noteSounds[noteId] = ClientStuff.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
+            noteSounds[noteId] = ModClient.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
             player.level().addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
@@ -207,32 +209,32 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-        int mouseX = (int) Math.round(dmouseX);
-        int mouseY = (int) Math.round(dmouseY);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         playSound(noteId);
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double dmouseX, double dmouseY, int mouseButton) {
-        int mouseX = (int) Math.round(dmouseX);
-        int mouseY = (int) Math.round(dmouseY);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         stopSound(noteId);
 
-        return super.mouseReleased(dmouseX, dmouseY, mouseButton);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        int mouseX = (int) Math.round(posX);
-        int mouseY = (int) Math.round(posY);
-        int prevMouseX = (int) Math.round(posX - deltaX);
-        int prevMouseY = (int) Math.round(posY - deltaY);
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
+        int prevMouseX = (int) Math.round(event.x() - deltaX);
+        int prevMouseY = (int) Math.round(event.y() - deltaY);
 
         int prevNoteId = noteIdFromPos(prevMouseX, prevMouseY);
         int currentNoteId = noteIdFromPos(mouseX, mouseY);
@@ -241,13 +243,15 @@ public class GuiInstrument extends Screen {
             playSound(currentNoteId);
         }
 
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
+        int scanCode = event.scancode();
         setFocused(null);
-        super.keyPressed(keyCode, scanCode, modifiers);
+        super.keyPressed(event);
 
         if (scanCode >= 16 && scanCode <= 27) {
             int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
@@ -265,7 +269,7 @@ public class GuiInstrument extends Screen {
     private void decreaseOctave() {
         if (currentKeyboardOctave > -3) {
             currentKeyboardOctave--;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }
@@ -273,13 +277,14 @@ public class GuiInstrument extends Screen {
     private void increaseOctave() {
         if (currentKeyboardOctave < instrument.getMaxOctave()) {
             currentKeyboardOctave++;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
+        int scanCode = event.scancode();
         if (scanCode >= 16 && scanCode <= 27) {
             int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
             stopSound(noteId);

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "xercafood:cooked_rice",
+    "xercafood:fried_egg",
+    "minecraft:dried_kelp"
+  ],
+  "result": {
+    "count": 2,
+    "id": "xercafood:egg_sushi"
+  }
+}

@@ -2,6 +2,10 @@
 {
     "parent": "item/generated",
     "textures": {
+<<<<<<<< HEAD:XercaConfetti/src/main/resources/assets/xercaconfetti/models/item/confetti_ball.json
+        "layer0": "xercaconfetti:item/confetti_ball"
+========
         "layer0": "xercafood:item/baked_rice_pudding"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/baked_rice_pudding.json
     }
 }

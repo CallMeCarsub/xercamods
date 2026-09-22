@@ -1,0 +1,11 @@
+
+{
+    "parent": "item/generated",
+    "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/doner_slice.json
+        "layer0": "xercafood:item/leaf_doner"
+========
+        "layer0": "xercafood:item/alexander"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/alexander.json
+    }
+}

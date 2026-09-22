@@ -1,9 +1,12 @@
-
 {
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_apple_juice.json
       "xercafood:item_apple_juice"
+========
+      "xercafood:alexander"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/alexander.json
     ]
   },
   "criteria": {
@@ -11,14 +14,24 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_apple_juice.json
           {"items": ["xercafood:item_glass"]}
+========
+          {
+            "items": "xercafood:doner_slice"
+          }
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/alexander.json
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_apple_juice.json
         "recipe": "xercafood:item_apple_juice"
+========
+        "recipe": "xercafood:alexander"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/alexander.json
       }
     }
   },
@@ -29,4 +42,3 @@
     ]
   ]
 }
-        

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "confetti",
+  "ingredients": [
+    "minecraft:paper",
+    "minecraft:cyan_dye",
+    "minecraft:magenta_dye",
+    "minecraft:yellow_dye"
+  ],
+  "result": {
+    "id": "xercatools:confetti",
+    "count": 12
+  }
+}

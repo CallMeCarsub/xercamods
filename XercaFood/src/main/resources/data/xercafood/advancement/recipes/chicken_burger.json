@@ -1,0 +1,44 @@
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_carrot_cupcake.json
+      "xercafood:item_carrot_cupcake"
+========
+      "xercafood:chicken_burger"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/chicken_burger.json
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_carrot_cupcake.json
+          {"items": ["minecraft:carrot"]}
+========
+          {
+            "items": "xercafood:bun"
+          }
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/chicken_burger.json
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_carrot_cupcake.json
+        "recipe": "xercafood:item_carrot_cupcake"
+========
+        "recipe": "xercafood:chicken_burger"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/chicken_burger.json
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}

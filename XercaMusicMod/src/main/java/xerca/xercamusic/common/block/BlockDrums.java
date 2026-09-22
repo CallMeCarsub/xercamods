@@ -7,31 +7,30 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 public class BlockDrums extends BlockInstrument {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] SHAPES = {
-            Block.box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
-            Block.box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
-            Block.box(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
-            Block.box(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
+            box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
+            box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
+            box(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
+            box(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
     };
 
-    public BlockDrums() {
-        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
+    public BlockDrums(Properties properties) {
+        super(properties.mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPES[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
     }
 
@@ -46,12 +45,12 @@ public class BlockDrums extends BlockInstrument {
     }
 
     @Override
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
+    public BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 

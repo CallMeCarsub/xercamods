@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:gold_nugget",
+    "minecraft:cookie"
+  ],
+  "result": {
+    "id": "xercacourt:attorney_badge"
+  }
+}

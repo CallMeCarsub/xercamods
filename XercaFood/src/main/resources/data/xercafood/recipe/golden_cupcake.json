@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "nan",
+    "mem",
+    "www"
+  ],
+  "key": {
+    "a": "minecraft:golden_apple",
+    "e": "#minecraft:eggs",
+    "w": "minecraft:wheat",
+    "m": "minecraft:milk_bucket",
+    "n": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "xercafood:golden_cupcake"
+  }
+}

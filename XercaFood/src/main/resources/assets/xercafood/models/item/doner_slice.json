@@ -2,6 +2,10 @@
 {
     "parent": "item/generated",
     "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/cooked_rice.json
+        "layer0": "xercafood:item/cooked_rice"
+========
         "layer0": "xercafood:item/leaf_doner"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/doner_slice.json
     }
 }

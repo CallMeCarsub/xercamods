@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pizza",
+  "ingredients": [
+    "xercafood:raw_pizza",
+    "minecraft:cod"
+  ],
+  "result": {
+    "id": "xercafood:raw_pizza_fish"
+  }
+}

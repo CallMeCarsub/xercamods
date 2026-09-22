@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "dc ",
+    " b "
+  ],
+  "key": {
+    "b": "xercafood:bun",
+    "c": "xercafood:cooked_chicken_patty",
+    "d": "xercafood:tomato_slices"
+  },
+  "result": {
+    "id": "xercafood:chicken_burger"
+  }
+}

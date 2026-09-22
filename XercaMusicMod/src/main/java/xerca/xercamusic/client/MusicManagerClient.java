@@ -1,19 +1,24 @@
 package xerca.xercamusic.client;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+
+import javax.annotation.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class MusicManagerClient {
@@ -21,11 +26,29 @@ public final class MusicManagerClient {
     static final Map<UUID, Runnable> TASK_MAP = new HashMap<>();
     static final String CACHE_DIR = "music_sheets/.cache/";
 
+    private MusicManagerClient() {
+    }
+
+    private static boolean ensureDirectoryExists(File directory) {
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                Mod.LOGGER.warn("music cache path exists but is not a directory: {}", directory.getAbsolutePath());
+                return false;
+            }
+            return true;
+        }
+        if (!directory.mkdirs()) {
+            Mod.LOGGER.warn("Could not create music cache directory: {}", directory.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
+
     public static void load() {
         // Load from disk
         File directory = new File(CACHE_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory)) {
+            return;
         }
         File[] directoryListing = directory.listFiles();
         if (directoryListing != null) {
@@ -34,22 +57,28 @@ public final class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap());
-                    if (tag.contains(KEY_ID) && id.equals(tag.getUUID(KEY_ID)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
-                        int version = tag.getInt(KEY_VERSION);
+                    if (id.equals(tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
+                        int version = tag.getIntOr(KEY_VERSION, 0);
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
-                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes));
+                        ArrayList<VolumeMarker> markers = new ArrayList<>();
+                        VolumeMarker.fillArrayFromNBT(markers, tag);
+                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes, markers.isEmpty() ? null : markers));
                     } else {
-                        if (!file.delete()) {
-                            Mod.LOGGER.warn("Could not delete invalid music sheet file: {}", file::getAbsolutePath);
-                        }
+                        deleteInvalidCacheFile(file, "invalid music sheet file");
                     }
                 } catch (IllegalArgumentException | IOException e) {
-                    if (!file.delete()) {
-                        Mod.LOGGER.warn("Could not delete music sheet file on exception {}: {}", e, file.getAbsolutePath());
-                    }
+                    deleteInvalidCacheFile(file, "music sheet file on exception " + e);
                 }
             }
+        }
+    }
+
+    private static void deleteInvalidCacheFile(File file, String reason) {
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException deleteError) {
+            Mod.LOGGER.warn("Could not delete {}: {}", reason, file.getAbsolutePath(), deleteError);
         }
     }
 
@@ -73,7 +102,7 @@ public final class MusicManagerClient {
         sendToServer(packet);
     }
 
-    public static MusicManager.MusicData getMusicData(UUID id, int ver) {
+    public static @Nullable MusicManager.MusicData getMusicData(UUID id, int ver) {
         if (MUSIC_MAP.containsKey(id)) {
             MusicManager.MusicData data = MUSIC_MAP.get(id);
             int dataVer = data.version();
@@ -92,21 +121,24 @@ public final class MusicManagerClient {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes) {
-        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes));
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers) {
+        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes, volumeMarkers));
 
         // Save on disk
         String filename = id.toString();
         String filepath = CACHE_DIR + "/" + filename;
         File directory = new File(CACHE_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory)) {
+            return;
         }
 
         CompoundTag tag = new CompoundTag();
-        tag.putUUID(KEY_ID, id);
+        tag.store(KEY_ID, UUIDUtil.CODEC, id);
         tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
+        if (volumeMarkers != null) {
+            VolumeMarker.fillNBTFromArray(volumeMarkers, tag);
+        }
         try {
             NbtIo.writeCompressed(tag, Path.of(filepath));
         } catch (IOException e) {

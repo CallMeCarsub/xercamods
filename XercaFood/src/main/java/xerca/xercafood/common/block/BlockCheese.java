@@ -4,16 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -21,28 +18,28 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.item.Items;
 
-class BlockCheese extends Block {
+public class BlockCheese extends Block {
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
-    protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{
-            Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D),
-            Shapes.or(Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
-                    Block.box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
-            Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
-            Block.box(8.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D)
+    protected static final VoxelShape[] SHAPE_BY_BITE = {
+            box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D),
+            Shapes.or(box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
+                    box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
+            box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
+            box(8.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D)
     };
 
     public BlockCheese() {
-        super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.SLIME_BLOCK).strength(0.5F));
+        super(Properties.of().setId(xerca.xercafood.common.Mod.blockKey("cheese_wheel")).sound(SoundType.SLIME_BLOCK).strength(0.5F));
     }
 
     @Override
@@ -51,30 +48,32 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        ItemStack heldItem = player.getItemInHand(handIn);
-        if (heldItem.getItem() == Items.ITEM_KNIFE) {
-            if (!worldIn.isClientSide) {
+    public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (KnifeCompat.isKnife(heldItem)) {
+            if (!worldIn.isClientSide()) {
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }
             worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat() * 0.1f);
             return InteractionResult.SUCCESS;
         }
+        InteractionResult ate = useWithoutItem(state, worldIn, pos, player, hit);
+        return ate.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
 
-        if (worldIn.isClientSide) {
+    @Override
+    public InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
+        if (worldIn.isClientSide()) {
             if (eat(worldIn, pos, state, player).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                         1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
                 return InteractionResult.SUCCESS;
             }
 
-            if (heldItem.isEmpty()) {
-                return InteractionResult.CONSUME;
-            }
+            return InteractionResult.CONSUME;
         }
 
         InteractionResult ate = eat(worldIn, pos, state, player);
-        if (ate.shouldSwing()) {
+        if (ate.consumesAction()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                     1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
         }
@@ -111,9 +110,7 @@ class BlockCheese extends Block {
         sliceEntity.hurtMarked = true;
         level.addFreshEntity(sliceEntity);
 
-        heldItem.hurtAndBreak(1, player, (playerEntity) -> {
-            playerEntity.broadcastBreakEvent(hand);
-        });
+        heldItem.hurtAndBreak(1, player, hand);
 
         int i = state.getValue(BITES);
         if (i < MAX_BITES) {
@@ -125,13 +122,14 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
-        return direction == Direction.DOWN && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
+    protected BlockState updateShape(BlockState blockState, LevelReader levelReader, ScheduledTickAccess tickAccess, BlockPos blockPos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        return direction == Direction.DOWN && !blockState.canSurvive(levelReader, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, levelReader, tickAccess, blockPos, direction, neighborPos, neighborState, random);
     }
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
-        return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        BlockPos supportPos = blockPos.below();
+        return levelReader.getBlockState(supportPos).isFaceSturdy(levelReader, supportPos, Direction.UP);
     }
 
     @Override
@@ -140,7 +138,7 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState p_51193_, BlockGetter p_51194_, BlockPos p_51195_, PathComputationType p_51196_) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
 }

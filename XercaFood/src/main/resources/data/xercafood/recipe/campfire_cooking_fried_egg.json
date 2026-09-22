@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": "#minecraft:eggs",
+  "result": {
+    "id": "xercafood:fried_egg"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
+}

@@ -1,0 +1,292 @@
+{
+  "parent": "xercafood:achievements/diabetes",
+  "display": {
+    "icon": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+      "item": "xercafood:item_fancy_apple_cupcake"
+========
+      "id": "xercafood:fancy_apple_cupcake"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+    },
+    "title": {
+      "translate": "advancements.xercafood.achievements.diabetes2.title"
+    },
+    "description": {
+      "translate": "advancements.xercafood.achievements.diabetes2.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "criteria": {
+    "cookie": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:cookie"]
+        }
+      }
+    },
+    "pumpkin_pie": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:pumpkin_pie"]
+        }
+      }
+    },
+    "apple_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_apple_cupcake"]
+========
+          "items": ["xercafood:apple_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "pumpkin_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_pumpkin_cupcake"]
+========
+          "items": ["xercafood:pumpkin_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "cocoa_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_cocoa_cupcake"]
+========
+          "items": ["xercafood:cocoa_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "melon_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_melon_cupcake"]
+========
+          "items": ["xercafood:melon_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "carrot_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_carrot_cupcake"]
+========
+          "items": ["xercafood:carrot_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "fancy_apple_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_fancy_apple_cupcake"]
+========
+          "items": ["xercafood:fancy_apple_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "fancy_pumpkin_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_fancy_pumpkin_cupcake"]
+========
+          "items": ["xercafood:fancy_pumpkin_cupcake"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "donut": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_donut"]
+========
+          "items": ["xercafood:donut"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "fancy_donut": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_fancy_donut"]
+========
+          "items": ["xercafood:fancy_donut"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "chocolate": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_chocolate"]
+========
+          "items": ["xercafood:chocolate"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "croissant": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_croissant"]
+========
+          "items": ["xercafood:croissant"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "ice_tea": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_ice_tea"]
+========
+          "items": ["xercafood:ice_tea"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "apple_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_apple_juice"]
+========
+          "items": ["xercafood:apple_juice"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "carrot_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_carrot_juice"]
+========
+          "items": ["xercafood:carrot_juice"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "melon_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_melon_juice"]
+========
+          "items": ["xercafood:melon_juice"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    },
+    "pumpkin_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/diabetes2.json
+          "items": ["xercafood:item_pumpkin_juice"]
+========
+          "items": ["xercafood:pumpkin_juice"]
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/diabetes2.json
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "cookie"
+    ],
+    [
+      "pumpkin_pie"
+    ],
+    [
+      "apple_cupcake"
+    ],
+    [
+      "pumpkin_cupcake"
+    ],
+    [
+      "cocoa_cupcake"
+    ],
+    [
+      "melon_cupcake"
+    ],
+    [
+      "carrot_cupcake"
+    ],
+    [
+      "fancy_apple_cupcake"
+    ],
+    [
+      "fancy_pumpkin_cupcake"
+    ],
+    [
+      "donut"
+    ],
+    [
+      "fancy_donut"
+    ],
+    [
+      "chocolate"
+    ],
+    [
+      "croissant"
+    ],
+    [
+      "ice_tea"
+    ],
+    [
+      "apple_juice"
+    ],
+    [
+      "carrot_juice"
+    ],
+    [
+      "melon_juice"
+    ],
+    [
+      "pumpkin_juice"
+    ]
+  ]
+}
+

@@ -1,0 +1,10 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/item_knife.json
+        "layer0": "xercafood:item/tools/knife"
+========
+      "layer0": "xercatools:item/knife"
+>>>>>>>> upstream/fabric-1.21.11:XercaTools/src/main/resources/assets/xercatools/models/item/knife.json
+    }
+}

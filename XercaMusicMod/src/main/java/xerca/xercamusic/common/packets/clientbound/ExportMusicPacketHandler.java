@@ -13,17 +13,15 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             if (CommandExport.doExport(player, msg.name())) {
-                player.sendSystemMessage(Component.translatable("xercamusic.export.success", msg.name()).withStyle(ChatFormatting.GREEN));
+                player.displayClientMessage(Component.translatable("xercamusic.export.success", msg.name()).withStyle(ChatFormatting.GREEN), false);
             } else {
-                player.sendSystemMessage(Component.translatable("xercamusic.export.fail").withStyle(ChatFormatting.RED));
+                player.displayClientMessage(Component.translatable("xercamusic.export.fail").withStyle(ChatFormatting.RED), false);
             }
         }
     }
 
     @Override
     public void receive(ExportMusicPacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 }

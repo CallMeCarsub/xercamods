@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -34,6 +34,7 @@ public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+    public static final int MAX_VOLUME_MARKERS_IN_PACKET = 2000;
 
     public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
         ServerPlayNetworking.send(player, packet);
@@ -41,20 +42,20 @@ public class Mod implements ModInitializer {
 
     @Nullable
     public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             return toRun.get().call();
         }
         return null;
     }
 
     public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             toRun.get().run();
         }
     }
 
-    public static ResourceLocation id(String location) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, location);
+    public static Identifier id(String location) {
+        return Identifier.fromNamespaceAndPath(MODID, location);
     }
 
     private void networkRegistry() {

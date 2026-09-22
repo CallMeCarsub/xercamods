@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "xercablocks:brown_terratile",
+  "result": {
+    "id": "xercablocks:brown_terratile_stairs",
+    "count": 1
+  }
+}

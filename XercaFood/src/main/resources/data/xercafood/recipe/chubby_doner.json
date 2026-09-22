@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "tdp",
+    " b "
+  ],
+  "key": {
+    "b": "xercafood:bun",
+    "t": "xercafood:tomato_slices",
+    "d": "xercafood:doner_slice",
+    "p": "xercafood:potato_fries"
+  },
+  "result": {
+    "id": "xercafood:chubby_doner"
+  }
+}

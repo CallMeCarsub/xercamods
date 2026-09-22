@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "xercafood:cooked_rice",
+    "minecraft:cooked_cod",
+    "minecraft:glow_ink_sac",
+    "minecraft:kelp",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "xercafood:glow_squid_ink_paella"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "cgc",
+    " c "
+  ],
+  "key": {
+    "c": "xercatools:confetti",
+    "g": "minecraft:gunpowder"
+  },
+  "result": {
+    "id": "xercatools:confetti_ball",
+    "count": 2
+  }
+}

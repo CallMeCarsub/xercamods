@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "pizza",
+  "ingredients": [
+    "xercafood:raw_pizza",
+    "xercafood:doner_slice",
+    "xercafood:doner_slice",
+    "xercafood:raw_sausage"
+  ],
+  "result": {
+    "id": "xercafood:raw_pizza_meat_meat_pepperoni"
+  }
+}

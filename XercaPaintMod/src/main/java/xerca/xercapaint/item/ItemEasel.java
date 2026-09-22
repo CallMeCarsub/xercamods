@@ -17,8 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
 
@@ -26,12 +24,12 @@ import java.util.function.Consumer;
 
 public class ItemEasel extends Item {
 
-    public ItemEasel(String name) {
-        super(new Item.Properties().stacksTo(1).setId(Mod.itemKey(name)));
+    public ItemEasel(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext ctx) {
+    public InteractionResult useOn(UseOnContext ctx) {
         Direction direction = ctx.getClickedFace();
         if (direction == Direction.DOWN) {
             return InteractionResult.FAIL;
@@ -50,8 +48,8 @@ public class ItemEasel extends Item {
                         return InteractionResult.FAIL;
                     }
 
-                    float f = (float) Mth.floor((Mth.wrapDegrees(ctx.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-                    easel.moveOrInterpolateTo(new Vec3(easel.getX(), easel.getY(), easel.getZ()), f, 0.0F);
+                    float f = Mth.floor((Mth.wrapDegrees(ctx.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
+                    easel.snapTo(easel.getX(), easel.getY(), easel.getZ(), f, 0.0F);
                     serverlevel.addFreshEntityWithPassengers(easel);
                     level.playSound(null, easel.getX(), easel.getY(), easel.getZ(), SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                     level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel.getPosition(0));

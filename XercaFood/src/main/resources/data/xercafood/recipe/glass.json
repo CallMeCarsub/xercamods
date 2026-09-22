@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "c c",
+    " c "
+  ],
+  "key": {
+    "c": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "xercafood:glass",
+    "count": 3
+  }
+}

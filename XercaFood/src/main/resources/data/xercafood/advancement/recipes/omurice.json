@@ -1,0 +1,44 @@
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/ender_cupcake.json
+      "xercafood:ender_cupcake"
+========
+      "xercafood:omurice"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/omurice.json
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/ender_cupcake.json
+          {"items": ["minecraft:chorus_fruit"]}
+========
+          {
+            "items": "xercafood:cooked_rice"
+          }
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/omurice.json
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/ender_cupcake.json
+        "recipe": "xercafood:ender_cupcake"
+========
+        "recipe": "xercafood:omurice"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/omurice.json
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": "minecraft:stripped_dark_oak_log",
+  "result": {
+    "id": "xercablocks:carved_dark_oak_8",
+    "count": 1
+  }
+}

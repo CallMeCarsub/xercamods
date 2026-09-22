@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": "xercafood:raw_chicken_patty",
+  "result": {
+    "id": "xercafood:cooked_chicken_patty"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
+}

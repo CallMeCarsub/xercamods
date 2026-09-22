@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lll",
+    "lll",
+    "lll"
+  ],
+  "key": {
+    "l": "minecraft:sugar_cane"
+  },
+  "result": {
+    "id": "xercablocks:block_straw"
+  }
+}

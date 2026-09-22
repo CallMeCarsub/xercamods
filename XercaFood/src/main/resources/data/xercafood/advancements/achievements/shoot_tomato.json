@@ -1,7 +1,11 @@
 {
   "display": {
     "icon": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/shoot_tomato.json
       "item": "xercafood:item_tomato"
+========
+      "id": "xercafood:tomato"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/shoot_tomato.json
     },
     "title": {
       "translate": "advancements.xercafood.achievements.hooligan.title"
@@ -27,3 +31,4 @@
     }
   }
 }
+

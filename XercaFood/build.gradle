@@ -1,6 +1,13 @@
 plugins {
+<<<<<<< HEAD
     id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
+=======
+    id 'fabric-loom' version '1.14.10'
+    id 'maven-publish'
+    id("com.github.spotbugs") version "6.5.9"
+    id "pmd"
+>>>>>>> upstream/fabric-1.21.11
 }
 
 version = project.mod_version
@@ -26,16 +33,28 @@ repositories {
 tasks.register('buildCopy', Copy) {
     dependsOn tasks.named('remapJar')
     from(tasks.named('remapJar').flatMap { it.archiveFile })
+<<<<<<< HEAD
     into(rootProject.layout.projectDirectory.dir("../builds"))
 }
 
 dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+=======
+    into(layout.projectDirectory.dir("../builds"))
+}
+
+dependencies {
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+>>>>>>> upstream/fabric-1.21.11
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
+<<<<<<< HEAD
         parchment("org.parchmentmc.data:parchment-1.20.2:2023.12.10@zip")
+=======
+        parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
+>>>>>>> upstream/fabric-1.21.11
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
@@ -57,30 +76,70 @@ processResources {
     }
 }
 
+<<<<<<< HEAD
 def targetJavaVersion = 17
+=======
+def targetJavaVersion = 21
+>>>>>>> upstream/fabric-1.21.11
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
+<<<<<<< HEAD
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         it.options.release = targetJavaVersion
     }
 }
 
+=======
+    it.options.release = targetJavaVersion
+}
+
+spotbugs {
+    ignoreFailures = true
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
+}
+
+tasks.named('spotbugsMain') {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+pmd {
+    toolVersion = "7.11.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+>>>>>>> upstream/fabric-1.21.11
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
+<<<<<<< HEAD
     archivesBaseName = project.archives_base_name
+=======
+>>>>>>> upstream/fabric-1.21.11
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
 
+<<<<<<< HEAD
+=======
+SourceSet mainSourceSet = sourceSets.main
+SourceSet testSourceSet = sourceSets.test
+SoftwareComponent javaComponent = components.named("java").get()
+
+>>>>>>> upstream/fabric-1.21.11
 jar {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
@@ -90,8 +149,13 @@ jar {
 // configure the maven publication
 publishing {
     publications {
+<<<<<<< HEAD
         mavenJava(MavenPublication) {
             from components.java
+=======
+        create("mavenJava", MavenPublication) {
+            from(javaComponent)
+>>>>>>> upstream/fabric-1.21.11
         }
     }
 
@@ -117,6 +181,43 @@ loom {
             ideConfigGenerated = true
             runDir "build/datagen"
         }
+<<<<<<< HEAD
+=======
+
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('runGameTest'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.named('runGameTest').configure {
+    doFirst {
+        def gameTestDir = file("build/gametest")
+        gameTestDir.mkdirs()
+        def serverProperties = new File(gameTestDir, "server.properties")
+        if (!serverProperties.exists()) {
+            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
+        }
+        def eulaFile = new File(gameTestDir, "eula.txt")
+        if (!eulaFile.exists()) {
+            eulaFile.text = "eula=true\n"
+        }
+>>>>>>> upstream/fabric-1.21.11
     }
 }
 
@@ -129,4 +230,8 @@ sourceSets {
             ]
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> upstream/fabric-1.21.11

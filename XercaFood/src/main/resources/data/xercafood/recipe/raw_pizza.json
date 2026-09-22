@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "pizza_base",
+  "pattern": [
+    "ct ",
+    "www"
+  ],
+  "key": {
+    "w": "minecraft:wheat",
+    "c": "xercafood:cheese_slice",
+    "t": "xercafood:tomato_slices"
+  },
+  "result": {
+    "id": "xercafood:raw_pizza"
+  }
+}

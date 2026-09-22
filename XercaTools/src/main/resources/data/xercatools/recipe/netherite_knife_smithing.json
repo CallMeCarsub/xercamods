@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "base": "xercatools:diamond_knife",
+  "addition": "minecraft:netherite_ingot",
+  "result": {
+    "id": "xercatools:netherite_knife"
+  },
+  "template": "minecraft:netherite_upgrade_smithing_template"
+}

@@ -13,32 +13,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.client.ModClient;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
-    ItemPalette(String name) {
-        super(new Properties().stacksTo(1).setId(Mod.itemKey(name)));
+    private static final int BASIC_COLOR_COUNT = 16;
+
+    ItemPalette(Properties properties) {
+        super(properties.stacksTo(1));
     }
 
-    @Nonnull
     @Override
-    public InteractionResult use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide()) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
+        if (worldIn.isClientSide()) {
             ModClient.showCanvasGui(playerIn);
         }
-        return InteractionResult.SUCCESS.withoutItem();
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean isFull(ItemStack stack) {
-        return basicColorCount(stack) == 16;
+        return basicColorCount(stack) == BASIC_COLOR_COUNT;
     }
 
     public static int basicColorCount(ItemStack stack) {
@@ -46,33 +44,30 @@ public class ItemPalette extends Item {
             return 0;
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
-        if (basicColors != null) {
-            if (basicColors.length == 16) {
-                int basicCount = 0;
-                for (byte basicColor : basicColors) {
-                    basicCount += basicColor;
-                }
-                return basicCount;
+        if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
+            int basicCount = 0;
+            for (byte basicColor : basicColors) {
+                basicCount += basicColor;
             }
+            return basicCount;
         }
         return 0;
     }
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
-            consumer.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
-        }
-        else  {
-            if (basicColors != null && basicColors.length == 16) {
+            tooltip.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
+        } else {
+            if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
                 int basicCount = 0;
                 for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
-                consumer.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
+                tooltip.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
             }
 
             if (customColorComp != null) {
@@ -82,12 +77,12 @@ public class ItemPalette extends Item {
                         fullCount++;
                     }
                 }
-                consumer.accept(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
+                tooltip.accept(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
-    public static class ComponentCustomColor {
+    public static final class ComponentCustomColor {
         public static final int CUSTOM_COLOR_COUNT = 12;
         public PaletteUtil.CustomColor[] colors;
 

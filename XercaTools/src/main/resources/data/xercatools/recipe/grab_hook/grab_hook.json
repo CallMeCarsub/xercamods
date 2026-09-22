@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  s",
+    " sc",
+    "s i"
+  ],
+  "key": {
+    "s": "minecraft:stick",
+    "c": "minecraft:iron_chain",
+    "i": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "xercatools:grab_hook"
+  }
+}

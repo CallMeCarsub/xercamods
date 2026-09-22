@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:alternatives",
@@ -18,18 +18,26 @@
                   }
                 }
               ],
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_tea_plant.json
               "name": "xercafood:item_tea_leaf"
             },
             {
               "type": "minecraft:item",
               "name": "xercafood:item_tea_seeds"
+========
+              "name": "xercafood:tea_leaf"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "xercafood:tea_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_tea_plant.json
             }
           ]
         }
       ]
     },
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -44,7 +52,11 @@
               }
             }
           ],
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_tea_plant.json
           "name": "xercafood:item_tea_seeds"
+========
+          "name": "xercafood:tea_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_tea_plant.json
         }
       ],
       "conditions": [

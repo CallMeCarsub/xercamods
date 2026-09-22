@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "i",
+    "s"
+  ],
+  "key": {
+    "s": "minecraft:stick",
+    "i": "minecraft:cobblestone"
+  },
+  "result": {
+    "id": "xercatools:stone_knife"
+  }
+}

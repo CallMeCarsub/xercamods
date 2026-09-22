@@ -1,0 +1,79 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "xercafood:block_tomato_plant",
+                  "properties": {
+                    "age": "3"
+                  }
+                }
+              ],
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_tomato_plant.json
+              "name": "xercafood:item_tomato"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "xercafood:item_tomato_seeds"
+========
+              "name": "xercafood:tomato"
+            },
+            {
+              "type": "minecraft:item",
+              "name": "xercafood:tomato_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_tomato_plant.json
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:apply_bonus",
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:binomial_with_bonus_count",
+              "parameters": {
+                "extra": 3,
+                "probability": 0.5714286
+              }
+            }
+          ],
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_tomato_plant.json
+          "name": "xercafood:item_tomato_seeds"
+========
+          "name": "xercafood:tomato_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_tomato_plant.json
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "xercafood:block_tomato_plant",
+          "properties": {
+            "age": "3"
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ]
+}
+

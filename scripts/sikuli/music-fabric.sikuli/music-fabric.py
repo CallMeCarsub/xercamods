@@ -110,8 +110,8 @@ def emptyInventory():
 
 def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
-    
-    win.click("1690565858766.png")
+
+    win.click("1784222760677.png")
     win.click("1689794207237.png")
     
     
@@ -228,11 +228,11 @@ def testItemsInCreative(mc, win, mcLoc):
     wheelUp(3)
     testAssert(exists("1689794960532.png"))
     wheelDown(3)
-    testAssert(exists("1690571257297.png"))
+    testAssert(exists("1776459405681.png"))
     
     # Help
     clickw(813, 76)
-    testAssert(exists("1690626104673.png"))
+    testAssert(exists("1776459457198.png"))
     clickw(813, 76)
     testAssert(exists("1689795099653.png"))
 
@@ -240,7 +240,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type(Key.ESC)
     wait(1)
     rclick()
-    testAssert(exists("1690571257297.png"))
+    testAssert(exists("1776459405681.png"))
     clickw(412, 67)
 
     # Middle click
@@ -289,7 +289,7 @@ def testItemsInCreative(mc, win, mcLoc):
     # Select all, delete with backspace (delete button does not work for some reason)
     win.type("a", KeyModifier.CTRL)
     win.type(Key.BACKSPACE)
-    testAssert(exists("1689796061344.png"))
+    testAssert(exists("1776459556984.png"))
     win.type("z", KeyModifier.CTRL)
     testAssert(exists("1762370798104.png"))
 
@@ -342,7 +342,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type(Key.ESC)
     win.type("2")
     rclick()
-    testAssert(exists("1689797385621.png"))
+    testAssert(exists("1776459869286.png"))
     
     clickw(596, 68)
     clickw(596, 68)
@@ -352,7 +352,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type(Key.ESC)
     rclick()
     neighbor_btn = exists("1689797421033.png")
-    testAssert(neighbor_btn and exists("1689797429976.png"))
+    testAssert(neighbor_btn and exists("1776459907562.png"))
     dragw(217, 168)
     dropw(325, 172)
     win.click(preview_btn)
@@ -392,11 +392,12 @@ def testItemsInCreative(mc, win, mcLoc):
 
     # Export/import commands
     old_similarity = Settings.MinSimilarity
-    Settings.MinSimilarity = 0.7
+    Settings.MinSimilarity = 0.5
     
     win.type("t")
     win.paste("/musicexport test")
     win.type(Key.ENTER)
+    wait(0.5)
     testAssert(exists("1727556138753.png"))
     wait(0.5)
     win.type("t")

@@ -2,9 +2,9 @@ package xerca.xercamusic.mixin;
 
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,15 +20,15 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 @SuppressWarnings("unused")
 @Mixin(ItemStackComponentizationFix.class)
-public class ItemStackComponentizationFixMixin {
+public abstract class ItemStackComponentizationFixMixin {
     @Inject(at = @At("TAIL"), method = "fixItemStack(Lnet/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData;Lcom/mojang/serialization/Dynamic;)V")
     private static void fixItemStackMixin(ItemStackComponentizationFix.ItemStackData itemStackData, Dynamic<?> tag, CallbackInfo info) {
         if (itemStackData.is("xercamusic:music_sheet")) {
             Function<Dynamic<?>, UUID> getUuidFromDynamic = (Dynamic<?> dynamic) -> {
                 if (dynamic.getOps() == NbtOps.INSTANCE) {
                     Tag nbtElement = (Tag) dynamic.getValue();
-                    if (nbtElement instanceof IntArrayTag) {
-                        return NbtUtils.loadUUID(nbtElement);
+                    if (nbtElement instanceof IntArrayTag intArrayTag) {
+                        return UUIDUtil.uuidFromIntArray(intArrayTag.getAsIntArray());
                     }
                 }
                 return null;

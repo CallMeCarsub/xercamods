@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "t  ",
+    "tt ",
+    "ttt"
+  ],
+  "key": {
+    "t": "xercablocks:green_terratile"
+  },
+  "result": {
+    "id": "xercablocks:green_terratile_stairs",
+    "count": 4
+  }
+}

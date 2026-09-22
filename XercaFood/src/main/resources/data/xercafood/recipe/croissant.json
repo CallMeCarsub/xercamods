@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sws",
+    "www"
+  ],
+  "key": {
+    "s": "minecraft:sugar",
+    "w": "minecraft:wheat"
+  },
+  "result": {
+    "id": "xercafood:croissant",
+    "count": 2
+  }
+}

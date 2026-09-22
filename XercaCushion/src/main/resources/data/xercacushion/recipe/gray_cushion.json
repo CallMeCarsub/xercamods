@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "cushion",
+  "pattern": [
+    "#",
+    "f",
+    "#"
+  ],
+  "key": {
+    "#": "minecraft:gray_wool",
+    "f": "minecraft:feather"
+  },
+  "result": {
+    "id": "xercacushion:gray_cushion"
+  }
+}

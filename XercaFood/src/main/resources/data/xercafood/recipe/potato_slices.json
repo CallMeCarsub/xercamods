@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:potato",
+    "#c:tools/knife"
+  ],
+  "result": {
+    "count": 2,
+    "id": "xercafood:potato_slices"
+  }
+}

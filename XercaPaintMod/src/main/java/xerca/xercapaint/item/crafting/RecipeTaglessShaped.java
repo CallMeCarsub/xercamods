@@ -9,24 +9,20 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
-    private final ItemStack result;
-
     public RecipeTaglessShaped(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
         super(group, category, pattern, result, showNotification);
-        this.result = result;
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(@NotNull CraftingInput inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         if (super.matches(inv, worldIn)) {
             for (int j = 0; j < inv.size(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
@@ -43,7 +39,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack result = super.assemble(inv, provider);
         if (!result.isEmpty()) {
             for (int j = 0; j < inv.size(); ++j) {
@@ -58,32 +54,32 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         return ItemStack.EMPTY;
     }
 
-    public ShapedRecipePattern pattern() {
+    public ShapedRecipePattern getPattern() {
         return this.pattern;
     }
 
     @Override
-    public @NotNull RecipeSerializer<RecipeTaglessShaped> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return CRAFTING_TAGLESS_SHAPED;
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        public static final MapCodec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+        public static final MapCodec<RecipeTaglessShaped> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
-                        ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::pattern),
-                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(shapedRecipe -> shapedRecipe.result),
+                        ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::getPattern),
+                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
                         Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(ShapedRecipe::showNotification))
                 .apply(instance, RecipeTaglessShaped::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> STREAM_CODEC = StreamCodec.of(RecipeTaglessShaped.TaglessSerializer::toNetwork, RecipeTaglessShaped.TaglessSerializer::fromNetwork);
 
         @Override
-        public @NotNull MapCodec<RecipeTaglessShaped> codec() {
-            return CODEC;
+        public MapCodec<RecipeTaglessShaped> codec() {
+            return MAP_CODEC;
         }
 
         @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> streamCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> streamCodec() {
             return STREAM_CODEC;
         }
 
@@ -99,7 +95,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         private static void toNetwork(RegistryFriendlyByteBuf buffer, RecipeTaglessShaped recipe) {
             buffer.writeUtf(recipe.group());
             buffer.writeEnum(recipe.category());
-            ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.pattern());
+            ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.getPattern());
             ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeBoolean(recipe.showNotification());
         }

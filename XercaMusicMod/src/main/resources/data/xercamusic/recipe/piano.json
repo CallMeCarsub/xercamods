@@ -1,11 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "ppp",
-        "sis",
-        "ppp"
-    ],
-    "key": {"s": {"item": "minecraft:string"}, "i": {"item": "minecraft:iron_nugget"}, "p": {"tag": "minecraft:planks"}},
-    "result": {"id": "xercamusic:piano"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "sis",
+    "ppp"
+  ],
+  "key": {
+    "s": "minecraft:string",
+    "i": "minecraft:iron_nugget",
+    "p": "#minecraft:planks"
+  },
+  "result": {
+    "id": "xercamusic:piano"
+  }
 }

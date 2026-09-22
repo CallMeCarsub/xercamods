@@ -1,6 +1,7 @@
 package xerca.xercamusic.common.packets.serverbound;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
@@ -11,23 +12,21 @@ import java.util.UUID;
 import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicDataRequestPacket> {
-    private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {
+    private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl, MinecraftServer server) {
         UUID id = msg.id();
         int version = msg.version();
-        MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
+        MusicManager.MusicData data = MusicManager.getMusicData(id, version, server);
         MusicDataResponsePacket packet;
         if (data != null) {
-            packet = new MusicDataResponsePacket(id, data.version(), data.notes());
+            packet = new MusicDataResponsePacket(id, data.version(), data.notes(), data.volumeMarkers());
         } else {
-            packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
+            packet = new MusicDataResponsePacket(id, 0, new ArrayList<>(), null);
         }
         sendToClient(pl, packet);
     }
 
     @Override
     public void receive(MusicDataRequestPacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player(), context.server()));
     }
 }

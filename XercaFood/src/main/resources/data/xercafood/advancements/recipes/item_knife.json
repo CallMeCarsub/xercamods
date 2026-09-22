@@ -1,9 +1,12 @@
-
 {
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_knife.json
       "xercafood:item_knife"
+========
+      "xercafood:ayran"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/ayran.json
     ]
   },
   "criteria": {
@@ -11,14 +14,20 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["minecraft:iron_ingot"]}
+          {
+            "items": "xercafood:glass"
+          }
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_knife.json
         "recipe": "xercafood:item_knife"
+========
+        "recipe": "xercafood:ayran"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/ayran.json
       }
     }
   },
@@ -29,4 +38,3 @@
     ]
   ]
 }
-        

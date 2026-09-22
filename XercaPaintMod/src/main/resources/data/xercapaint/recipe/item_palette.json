@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "ppp"
+  ],
+  "key": {
+    "b": "minecraft:brush",
+    "p": "#minecraft:planks"
+  },
+  "result": {
+    "id": "xercapaint:item_palette"
+  }
+}

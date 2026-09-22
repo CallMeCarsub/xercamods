@@ -1,0 +1,56 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_rice_plant.json
+          "name": "xercafood:item_rice_seeds"
+========
+          "name": "xercafood:rice_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_rice_plant.json
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:apply_bonus",
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:binomial_with_bonus_count",
+              "parameters": {
+                "extra": 3,
+                "probability": 0.5714286
+              }
+            }
+          ],
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/loot_tables/blocks/block_rice_plant.json
+          "name": "xercafood:item_rice_seeds"
+========
+          "name": "xercafood:rice_seeds"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/loot_table/blocks/block_rice_plant.json
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "xercafood:block_rice_plant",
+          "properties": {
+            "age": "7"
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ]
+}

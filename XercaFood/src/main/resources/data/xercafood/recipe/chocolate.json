@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " s ",
+    "cmc",
+    " s "
+  ],
+  "key": {
+    "s": "minecraft:sugar",
+    "c": "minecraft:cocoa_beans",
+    "m": "minecraft:milk_bucket"
+  },
+  "result": {
+    "id": "xercafood:chocolate",
+    "count": 6
+  }
+}

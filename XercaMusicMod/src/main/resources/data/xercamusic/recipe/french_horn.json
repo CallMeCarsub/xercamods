@@ -1,11 +1,14 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "  g",
-        "ggg",
-        "gg "
-    ],
-    "key": {"g": {"item": "minecraft:gold_nugget"}},
-    "result": {"id": "xercamusic:french_horn"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  g",
+    "ggg",
+    "gg "
+  ],
+  "key": {
+    "g": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "xercamusic:french_horn"
+  }
 }

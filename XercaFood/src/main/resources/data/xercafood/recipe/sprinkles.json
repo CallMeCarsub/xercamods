@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:sugar",
+    "minecraft:sugar",
+    "minecraft:sugar",
+    "minecraft:cyan_dye",
+    "minecraft:magenta_dye",
+    "minecraft:yellow_dye"
+  ],
+  "result": {
+    "count": 12,
+    "id": "xercafood:sprinkles"
+  }
+}

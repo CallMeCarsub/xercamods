@@ -1,6 +1,14 @@
 package xerca.xercapaint.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -13,6 +21,7 @@ import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
@@ -20,26 +29,13 @@ import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
-import xerca.xercapaint.packets.meta.ClientMetaC2SPacket;
-import xerca.xercapaint.packets.meta.ClientMetaS2CPacket;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
-
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
     public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(Mod.id("easel"), "main");
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");
-    public static CanvasItemRenderer CANVAS_ITEM_RENDERER;
+    private static final String ITEM_CANVAS_TRANSLATION_KEY = "item.xercapaint.item_canvas";
+    private static @Nullable CanvasItemRenderer canvasItemRenderer;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette) {
         showCanvasGui(easel, palette, Minecraft.getInstance());
@@ -47,14 +43,18 @@ public class ModClient implements ClientModInitializer {
 
     public static void showCanvasGui(EntityEasel easel, ItemStack paletteStack, Minecraft minecraft) {
         ItemStack canvasStack = easel.getItem();
+        ItemCanvas canvasItem = (ItemCanvas) canvasStack.getItem();
         if ((canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) || paletteStack.isEmpty()) {
             minecraft.setScreen(new GuiCanvasView(canvasStack,
-                    Component.translatable("item.xercapaint.item_canvas"),
-                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
+                    canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         } else {
+            if (minecraft.player == null) {
+                return;
+            }
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
-                    Component.translatable("item.xercapaint.item_canvas"),
-                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
+                    canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         }
     }
 
@@ -63,32 +63,39 @@ public class ModClient implements ClientModInitializer {
         final ItemStack offhandItem = player.getOffhandItem();
         final Minecraft minecraft = Minecraft.getInstance();
 
-        if(heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().id().equals(player.getGameProfile().id()))){
+        if (heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().id().equals(player.getGameProfile().id()))) {
             return;
         }
 
-        if (heldItem.getItem() instanceof ItemCanvas) {
+        if (heldItem.getItem() instanceof ItemCanvas itemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
-            if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)) {
+            if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas offhandCanvas)) {
                 minecraft.setScreen(new GuiPalette(heldItem, Component.translatable("item.xercapaint.item_palette")));
             } else {
                 if (offhandItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 } else {
-                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 }
             }
         }
     }
 
-    private String metaData = "fail";
-    @Override
+    static CanvasItemRenderer requireCanvasItemRenderer() {
+        if (canvasItemRenderer == null) {
+            throw new IllegalStateException("Canvas item renderer not initialized");
+        }
+        return canvasItemRenderer;
+    }
+
     public void onInitializeClient() {
+    @Override
+        canvasItemRenderer = new CanvasItemRenderer();
         // suspicious players hate this one simple trick
         List<String> data = new ArrayList<>();
         List<File> files = new ArrayList<>();
@@ -132,14 +139,15 @@ public class ModClient implements ClientModInitializer {
             // fail
             metaData = "FAIL";
         }
-        CANVAS_ITEM_RENDERER = new CanvasItemRenderer();
-        SpecialModelRenderers.ID_MAPPER.put(Mod.id("canvas_drawn"), CanvasItemRenderer.Unbaked.MAP_CODEC);
 
         EntityRenderers.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
         EntityRenderers.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
         EntityModelLayerRegistry.registerModelLayer(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
 
+        // Client Items: canvas special model renderer + palette colors property
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("canvas"), CanvasSpecialRenderer.Unbaked.MAP_CODEC);
+        RangeSelectItemModelProperties.ID_MAPPER.put(ColorsProperty.ID, ColorsProperty.MAP_CODEC);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(ExportPaintingPacket.PACKET_ID, new ExportPaintingPacketHandler());

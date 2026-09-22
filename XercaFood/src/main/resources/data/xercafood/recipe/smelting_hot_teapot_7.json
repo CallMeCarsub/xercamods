@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "group": "hot_teapot",
+  "ingredient": "xercafood:full_teapot_7",
+  "result": {
+    "id": "xercafood:hot_teapot_7"
+  },
+  "experience": 0.4,
+  "cookingtime": 400
+}

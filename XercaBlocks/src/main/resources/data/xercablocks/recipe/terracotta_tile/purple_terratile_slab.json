@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ttt"
+  ],
+  "key": {
+    "t": "xercablocks:purple_terratile"
+  },
+  "result": {
+    "id": "xercablocks:purple_terratile_slab",
+    "count": 6
+  }
+}

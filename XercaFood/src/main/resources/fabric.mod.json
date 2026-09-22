@@ -2,8 +2,13 @@
   "schemaVersion": 1,
   "id": "xercafood",
   "version": "${version}",
+<<<<<<< HEAD
   "name": "xercafood",
   "description": "",
+=======
+  "name": "Xerca's Kitchen",
+  "description": "Expands your cuisine",
+>>>>>>> upstream/fabric-1.21.11
   "authors": ["xerca"],
   "contact": {},
   "license": "GPL-3.0",
@@ -11,10 +16,17 @@
   "environment": "*",
   "entrypoints": {
     "client": [
+<<<<<<< HEAD
       "xerca.xercafood.client.ClientStuff"
     ],
     "main": [
       "xerca.xercafood.common.XercaFood"
+=======
+      "xerca.xercafood.client.ModClient"
+    ],
+    "main": [
+      "xerca.xercafood.common.Mod"
+>>>>>>> upstream/fabric-1.21.11
     ],
     "fabric-datagen": [
       "xerca.xercafood.common.data.XercaFoodDatagen"
@@ -24,7 +36,13 @@
     "xercafood.mixins.json"
   ],
   "depends": {
+<<<<<<< HEAD
     "fabricloader": ">=0.15.1",
     "minecraft": "1.20.2"
+=======
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.11"
+>>>>>>> upstream/fabric-1.21.11
   }
 }

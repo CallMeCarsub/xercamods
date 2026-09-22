@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "xercablocks:cyan_terratile",
+  "result": {
+    "id": "xercablocks:cyan_terratile_slab",
+    "count": 2
+  }
+}

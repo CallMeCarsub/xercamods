@@ -2,6 +2,10 @@
 {
     "parent": "item/generated",
     "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/beef_donburi.json
+        "layer0": "xercafood:item/beef_donburi"
+========
         "layer0": "xercafood:item/cooked_rice"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/cooked_rice.json
     }
 }

@@ -1,9 +1,12 @@
-
 {
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_chicken_wrap.json
       "xercafood:item_chicken_wrap"
+========
+      "xercafood:beef_donburi"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/beef_donburi.json
     ]
   },
   "criteria": {
@@ -11,14 +14,24 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_chicken_wrap.json
           {"items": ["minecraft:cooked_chicken"]}
+========
+          {
+            "items": "xercafood:cooked_rice"
+          }
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/beef_donburi.json
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/recipes/item_chicken_wrap.json
         "recipe": "xercafood:item_chicken_wrap"
+========
+        "recipe": "xercafood:beef_donburi"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/recipes/beef_donburi.json
       }
     }
   },
@@ -29,4 +42,3 @@
     ]
   ]
 }
-        

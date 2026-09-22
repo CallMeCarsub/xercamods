@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": "xercafood:raw_shish_kebab",
+  "result": {
+    "id": "xercafood:shish_kebab"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
+}

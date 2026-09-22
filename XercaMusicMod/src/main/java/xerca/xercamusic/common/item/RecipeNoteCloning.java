@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -9,9 +8,9 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class RecipeNoteCloning extends CustomRecipe {
     public RecipeNoteCloning(CraftingBookCategory category) {
         super(category);
@@ -21,7 +20,7 @@ public class RecipeNoteCloning extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
@@ -48,7 +47,7 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@NotNull CraftingInput inv, HolderLookup.@NotNull Provider registries) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
@@ -83,6 +82,7 @@ public class RecipeNoteCloning extends CustomRecipe {
             resultStack.set(Items.SHEET_VOLUME, orgNote.get(Items.SHEET_VOLUME));
             resultStack.set(Items.SHEET_AUTHOR, orgNote.get(Items.SHEET_AUTHOR));
             resultStack.set(Items.SHEET_TITLE, orgNote.get(Items.SHEET_TITLE));
+            ItemMusicSheet.updateStackSize(resultStack);
             return resultStack;
         } else {
             return ItemStack.EMPTY;
@@ -107,15 +107,8 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_NOTECLONING;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
-    }
 }

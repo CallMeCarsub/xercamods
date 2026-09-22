@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "b",
+    "p",
+    "b"
+  ],
+  "key": {
+    "p": "xercafood:cooked_sausage",
+    "b": "xercafood:bun"
+  },
+  "result": {
+    "id": "xercafood:hotdog"
+  }
+}

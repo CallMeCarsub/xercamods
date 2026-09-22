@@ -1,8 +1,11 @@
 {
   "model": {
     "type": "minecraft:range_dispatch",
-    "property": "minecraft:custom_model_data",
-    "index": 0,
+    "property": "xercapaint:palette_colors",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "xercapaint:item/item_palette"
+    },
     "entries": [
       {
         "threshold": 1,
@@ -116,10 +119,6 @@
           "model": "xercapaint:item/item_palette16"
         }
       }
-    ],
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "xercapaint:item/item_palette"
-    }
+    ]
   }
 }

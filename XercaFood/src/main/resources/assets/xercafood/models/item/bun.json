@@ -1,0 +1,10 @@
+{
+    "parent": "item/generated",
+    "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/cola_extract.json
+        "layer0": "xercafood:item/cola_extract"
+========
+        "layer0": "xercafood:item/burgers/bun"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/bun.json
+    }
+}

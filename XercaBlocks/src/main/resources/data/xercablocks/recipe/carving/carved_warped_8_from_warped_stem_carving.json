@@ -1,0 +1,8 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": "minecraft:warped_stem",
+  "result": {
+    "id": "xercablocks:carved_warped_8",
+    "count": 1
+  }
+}

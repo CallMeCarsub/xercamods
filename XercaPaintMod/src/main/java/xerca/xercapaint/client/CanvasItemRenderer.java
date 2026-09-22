@@ -3,46 +3,41 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mojang.serialization.MapCodec;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
-import java.util.Set;
-import java.util.function.Consumer;
+public class CanvasItemRenderer {
+    private static final Identifier BACK_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final Identifier EMPTY_CANVAS_LOCATION = Mod.id("textures/block/empty.png");
+    private static final Identifier GLASS_FRAME_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
+    private static final int GLASS_INVENTORY_TINT = 0xFFDCE6FF;
 
-public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
-    private static final Identifier backLocation = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
-    private static final Identifier emptyCanvasLocation = Mod.id("textures/block/empty.png");
-
-    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, int combinedLight, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
-            boolean rendered = false;
+            RenderEntityCanvas.Instance canvasIns = null;
             if (stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null) {
-                RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
-                if(canvasIns != null){
-                    canvasIns.render(null, 0, 0, matrixStack, submitNodeCollector, Direction.UP, combinedLight);
-                    rendered = true;
-                }
+                canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
             }
+            renderCanvas(canvasIns, itemCanvas.getWidth(), itemCanvas.getHeight(), itemCanvas.isGlass(), displayContext, matrixStack, collector, combinedLight);
+        }
+    }
 
-            if(!rendered) {
-                renderEmptyCanvas(matrixStack, submitNodeCollector, itemCanvas.getWidth(), itemCanvas.getHeight(), combinedLight);
-            }
+    void renderCanvas(@Nullable RenderEntityCanvas.Instance canvasIns, int width, int height, boolean glass, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight) {
+        if (canvasIns != null) {
+            int tint = (glass && displayContext == ItemDisplayContext.GUI) ? GLASS_INVENTORY_TINT : RenderEntityCanvas.NO_TINT;
+            canvasIns.render(false, 0, 0, 0, matrixStack, collector, Direction.UP, combinedLight, glass, tint);
+        } else {
+            renderEmptyCanvas(matrixStack, collector, width, height, combinedLight, glass);
         }
     }
 
@@ -50,18 +45,11 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
         vb.addVertex(m, (float) x, (float) y, (float) z).setColor(255, 255, 255, 255).setUv(tx, ty).setOverlay(OverlayTexture.NO_OVERLAY).setLight(lightmap).setNormal(pose, xOff, yOff, zOff);
     }
 
-    private void renderEmptyCanvas(PoseStack ms, SubmitNodeCollector submitNodeCollector, float width, float height, int packedLight){
-        final float wScale = width/16.0f;
-        final float hScale = height/16.0f;
+    private void renderEmptyCanvas(PoseStack ms, SubmitNodeCollector collector, float width, float height, int packedLight, boolean glass) {
+        final float wScale = width / 16.0f;
+        final float hScale = height / 16.0f;
 
         ms.pushPose();
-        Matrix3f mn = ms.last().normal();
-
-        float xOffset = Direction.UP.getStepX();
-        float yOffset = Direction.UP.getStepY();
-        float zOffset = Direction.UP.getStepZ();
-
-        ms.last().normal().set(mn);
 
         float f = 1.0f / 32.0f;
         ms.translate(0.75, 0.5, 0.5);
@@ -75,82 +63,91 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
         ms.scale(f, f, f);
 
+        final float w32 = 32.0F * wScale;
+        final float h32 = 32.0F * hScale;
 
+        if (glass) {
+            // Empty glass canvas: transparent front and back, only the glass-pane frame on the edges
+            collector.submitCustomGeometry(ms, RenderTypes.entityTranslucent(GLASS_FRAME_LOCATION), (pose, vb) ->
+                    renderGlassFrame(vb, pose.pose(), pose, w32, h32, packedLight));
+            ms.popPose();
+            return;
+        }
 
-
-        submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(emptyCanvasLocation), (pose, vb) -> {
+        collector.submitCustomGeometry(ms, RenderTypes.entitySolid(EMPTY_CANVAS_LOCATION), (pose, vb) -> {
             Matrix4f m = pose.pose();
-
-            // Draw the front
-            addVertex(vb, m, pose, 0.0F, 32.0F*hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0F*wScale, 32.0F*hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0F*wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-
+            // Draw the front (normal -Z)
+            addVertex(vb, m, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(vb, m, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(vb, m, pose, w32, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
         });
 
-        submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(backLocation), (pose, vb2) -> {
+        collector.submitCustomGeometry(ms, RenderTypes.entitySolid(BACK_LOCATION), (pose, vb) -> {
+            Matrix4f m = pose.pose();
             // Draw the back and sides
-            final float sideWidth = 1.0F/16.0F;
-            Matrix4f m = pose.pose();
+            final float sideWidth = 1.0F / 16.0F;
 
-            addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 32.0D*hScale, 1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+            // BACK (normal +Z)
+            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(vb, m, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(vb, m, pose, w32, h32, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(vb, m, pose, 0.0D, h32, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
 
-            // Sides
-            addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 32.0D*hScale, 1.0D, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 32.0D*hScale, -1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+            // LEFT SIDE (x = 0, normal -X)
+            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, 0.0D, h32, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, 0.0D, h32, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
 
-            addVertex(vb2, m, pose, 0.0D, 32.0D*hScale, 1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, 1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, -1.0F, 1.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 32.0D*hScale, -1.0F, 0.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
+            // TOP SIDE (y = h32, normal +Y)
+            addVertex(vb, m, pose, 0.0D, h32, 1.0F, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(vb, m, pose, w32, h32, 1.0F, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(vb, m, pose, w32, h32, -1.0F, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(vb, m, pose, 0.0D, h32, -1.0F, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
 
-            addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, 1.0F, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
+            // RIGHT SIDE (x = w32, normal +X)
+            addVertex(vb, m, pose, w32, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, w32, h32, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, w32, h32, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(vb, m, pose, w32, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
 
-            addVertex(vb2, m, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
-
-
+            // BOTTOM SIDE (y = 0, normal -Y)
+            addVertex(vb, m, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(vb, m, pose, w32, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(vb, m, pose, w32, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
         });
+
         ms.popPose();
     }
 
-    @Override
-    public void submit(@Nullable ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, SubmitNodeCollector submitNodeCollector, int light, int overlay, boolean bl, int k) {
-        renderByItem(stack, displayContext, matrices, submitNodeCollector, light, overlay);
-    }
-
-    @Override
-    public void getExtents(Consumer<Vector3fc> consumer) {
-        consumer.accept(new Vector3f(0, 0, 0));
-    }
-
-    @Override
-    public @Nullable ItemStack extractArgument(ItemStack itemStack) {
-        return itemStack;
-    }
-
-    public static class Unbaked implements SpecialModelRenderer.Unbaked {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
-
-        @Override
-        public @Nullable SpecialModelRenderer<?> bake(BakingContext bakingContext) {
-            return new CanvasItemRenderer();
-        }
-
-        @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
-            return MAP_CODEC;
-        }
+    /**
+     * Renders the four glass-canvas edges using the vanilla glass-pane texture. Mirrors
+     * renderGlassFramefor the empty-canvas item path.
+     */
+    private void renderGlassFrame(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, float w32, float h32, int packedLight) {
+        final double eps = 0.001;
+        final float depth = 1.0F / 16.0F;
+        // LEFT (x = 0, normal -X)
+        addVertex(vb, m, pose, eps, eps, 1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, eps, h32 - eps, 1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, eps, h32 - eps, -1.0D, depth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, eps, eps, -1.0D, depth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+        // TOP (y = h32, normal +Y)
+        addVertex(vb, m, pose, eps, h32 - eps, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, h32 - eps, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, h32 - eps, -1.0D, 1.0F, depth, packedLight, 0.0F, 1.0F, 0.0F);
+        addVertex(vb, m, pose, eps, h32 - eps, -1.0D, 0.0F, depth, packedLight, 0.0F, 1.0F, 0.0F);
+        // RIGHT (x = w32, normal +X)
+        addVertex(vb, m, pose, w32 - eps, eps, -1.0D, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, h32 - eps, -1.0D, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, h32 - eps, 1.0D, depth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, eps, 1.0D, depth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+        // BOTTOM (y = 0, normal -Y)
+        addVertex(vb, m, pose, eps, eps, -1.0D, 0.0F, 0.0F, packedLight, 0.0F, -1.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, eps, -1.0D, 1.0F, 0.0F, packedLight, 0.0F, -1.0F, 0.0F);
+        addVertex(vb, m, pose, w32 - eps, eps, 1.0D, 1.0F, depth, packedLight, 0.0F, -1.0F, 0.0F);
+        addVertex(vb, m, pose, eps, eps, 1.0D, 0.0F, depth, packedLight, 0.0F, -1.0F, 0.0F);
     }
 }

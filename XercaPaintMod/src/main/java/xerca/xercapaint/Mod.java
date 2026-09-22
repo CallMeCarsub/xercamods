@@ -72,10 +72,6 @@ public class Mod implements ModInitializer {
     }
 
     public static Identifier id(String location) {
-        return Identifier.fromNamespaceAndPath(MODID, location);
-    }
-
-    public static ResourceKey<Item> itemKey(String location) {
-        return ResourceKey.create(Registries.ITEM, Mod.id(location));
+        return Identifier.fromNamespaceAndPath(MOD_ID, location);
     }
 }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "sgs",
+    "ppp"
+  ],
+  "key": {
+    "s": "minecraft:string",
+    "g": "minecraft:gold_nugget",
+    "p": "#minecraft:planks"
+  },
+  "result": {
+    "id": "xercamusic:organ"
+  }
+}

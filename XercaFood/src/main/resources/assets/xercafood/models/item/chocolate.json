@@ -1,0 +1,10 @@
+{
+	"parent": "item/generated",
+	"textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/item_tea_dried.json
+		"layer0": "xercafood:item/tea_dried"
+========
+		"layer0": "xercafood:item/chocolate"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/chocolate.json
+	}
+}

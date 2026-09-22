@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "terratile",
+  "pattern": [
+    "tt",
+    "tt"
+  ],
+  "key": {
+    "t": "minecraft:brown_terracotta"
+  },
+  "result": {
+    "id": "xercablocks:brown_terratile",
+    "count": 4
+  }
+}

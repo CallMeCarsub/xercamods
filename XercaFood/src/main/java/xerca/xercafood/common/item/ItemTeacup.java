@@ -1,34 +1,43 @@
 package xerca.xercafood.common.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.lwjgl.system.NonnullDefault;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 @NonnullDefault
 public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount, Item teaCup) {
-        super(sugarAmount == 0 ? (new Item.Properties()).food(Foods.TEACUP0) :
-                sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
-                        sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
-                                sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
-                                        sugarAmount == 4 ? (new Item.Properties()).food(Foods.TEACUP4) :
-                                                sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
-                                                        (new Item.Properties()).food(Foods.TEACUP6), teaCup, 64);
+        super(createProperties(sugarAmount), teaCup, 64);
         this.sugarAmount = sugarAmount;
     }
 
+    private static Item.Properties createProperties(int sugarAmount) {
+        Item.Properties properties = new Item.Properties()
+                .setId(xerca.xercafood.common.Mod.itemKey("full_teacup_" + Math.min(sugarAmount, 6)));
+        net.minecraft.world.item.component.Consumable consumable = Foods.teacupConsumable(sugarAmount);
+        return switch (sugarAmount) {
+            case 0 -> properties.food(Foods.TEACUP0, consumable);
+            case 1 -> properties.food(Foods.TEACUP1, consumable);
+            case 2 -> properties.food(Foods.TEACUP2, consumable);
+            case 3 -> properties.food(Foods.TEACUP3, consumable);
+            case 4 -> properties.food(Foods.TEACUP4, consumable);
+            case 5 -> properties.food(Foods.TEACUP5, consumable);
+            default -> properties.food(Foods.TEACUP6, consumable);
+        };
+    }
+
     @Override
-    public UseAnim getUseAnimation(ItemStack par1ItemStack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack par1ItemStack) {
+        return ItemUseAnimation.DRINK;
     }
 
     public int getSugarAmount() {
@@ -36,13 +45,13 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         if (this.sugarAmount == 0) {
-            tooltip.add(Component.literal("No sugar"));
+            tooltip.accept(Component.literal("No sugar"));
         } else if (this.sugarAmount == 1) {
-            tooltip.add(Component.literal(this.sugarAmount + " sugar"));
+            tooltip.accept(Component.literal(this.sugarAmount + " sugar"));
         } else {
-            tooltip.add(Component.literal(this.sugarAmount + " sugars"));
+            tooltip.accept(Component.literal(this.sugarAmount + " sugars"));
         }
     }
 
@@ -52,7 +61,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 64;
     }
 }

@@ -1,0 +1,10 @@
+{
+    "parent": "item/generated",
+    "textures": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/assets/xercafood/models/item/cheese_toast.json
+        "layer0": "xercafood:item/sandwiches/cheese_toast"
+========
+        "layer0": "xercafood:item/cupcakes/cupcake_apple"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/assets/xercafood/models/item/apple_cupcake.json
+    }
+}

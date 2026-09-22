@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "xercaomnichest:entity/chest/omni_chest"
+    }
+  ]
+}

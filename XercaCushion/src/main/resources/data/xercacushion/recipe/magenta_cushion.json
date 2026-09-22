@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "cushion",
+  "pattern": [
+    "#",
+    "f",
+    "#"
+  ],
+  "key": {
+    "#": "minecraft:magenta_wool",
+    "f": "minecraft:feather"
+  },
+  "result": {
+    "id": "xercacushion:magenta_cushion"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sas",
+    "mem",
+    "www"
+  ],
+  "key": {
+    "a": "minecraft:glow_berries",
+    "s": "minecraft:sugar",
+    "e": "#minecraft:eggs",
+    "w": "minecraft:wheat",
+    "m": "minecraft:milk_bucket"
+  },
+  "result": {
+    "id": "xercafood:glowberry_cupcake",
+    "count": 6
+  }
+}

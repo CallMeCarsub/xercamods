@@ -3,6 +3,7 @@ package xerca.xercapaint.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
@@ -16,33 +17,39 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.CanvasType;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
+    private static final int ORIGINAL_GENERATION = 1;
+    private static final int COPY_GENERATION = 3;
     private final CanvasType canvasType;
+    private final boolean glass;
 
-    ItemCanvas(CanvasType canvasType, String name) {
-        super(Entities.CANVAS, new Item.Properties().stacksTo(1).setId(Mod.itemKey(name)));
+    ItemCanvas(CanvasType canvasType, boolean glass, Item.Properties properties) {
+        super(Entities.CANVAS, properties.stacksTo(1));
         this.canvasType = canvasType;
+        this.glass = glass;
+    }
+
+    public boolean isGlass() {
+        return glass;
     }
 
     @Override
-    public InteractionResult use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide()){
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
+        if (worldIn.isClientSide()) {
             ModClient.showCanvasGui(playerIn);
         }
-        return InteractionResult.SUCCESS.withoutItem();
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -58,11 +65,9 @@ public class ItemCanvas extends HangingEntityItem {
                     ModClient.showCanvasGui(player);
                 }
             } else {
-                Level world = context.getLevel();
-
                 String canvasId = itemstack.get(Items.CANVAS_ID);
-                List<Integer> canvasPixles = itemstack.get(Items.CANVAS_PIXELS);
-                if (canvasId == null || canvasPixles == null) {
+                List<Integer> canvasPixels = itemstack.get(Items.CANVAS_PIXELS);
+                if (canvasId == null || canvasPixels == null) {
                     if (context.getLevel().isClientSide()) {
                         ModClient.showCanvasGui(player);
                     }
@@ -71,12 +76,12 @@ public class ItemCanvas extends HangingEntityItem {
 
                 int rotation = getRotation(direction, blockpos, player);
 
-                if (!world.isClientSide()) {
-                    EntityCanvas entityCanvas = new EntityCanvas(world, itemstack, pos, direction, canvasType, rotation);
+                if (!context.getLevel().isClientSide()) {
+                    EntityCanvas entityCanvas = new EntityCanvas(context.getLevel(), itemstack, pos, direction, canvasType, rotation);
 
                     if (entityCanvas.survives()) {
                         entityCanvas.playPlacementSound();
-                        world.addFreshEntity(entityCanvas);
+                        context.getLevel().addFreshEntity(entityCanvas);
                         itemstack.shrink(1);
                     }
                 }
@@ -108,34 +113,34 @@ public class ItemCanvas extends HangingEntityItem {
         return rotation;
     }
 
-    public static boolean hasTitle(@Nonnull ItemStack stack) {
+    public static boolean hasTitle(ItemStack stack) {
         return !StringUtil.isNullOrEmpty(stack.get(Items.CANVAS_TITLE));
     }
 
-    public static Component getFullLabel(@Nonnull ItemStack stack) {
+    public static Component getFullLabel(ItemStack stack) {
         String labelString = "";
         Component title = getCustomTitle(stack);
         if (title != null) {
-            labelString += (title.getString() + " ");
+            labelString += title.getString() + " ";
         }
         String author = stack.get(Items.CANVAS_AUTHOR);
 
         if (!StringUtil.isNullOrEmpty(author)) {
-            labelString += (Component.translatable("canvas.byAuthor", author)).getString() + " ";
+            labelString += Component.translatable("canvas.byAuthor", author).getString() + " ";
         }
 
         int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
         MutableComponent label = Component.literal(labelString);
-        if (generation == 1) {
+        if (generation == ORIGINAL_GENERATION) {
             label.withStyle(ChatFormatting.YELLOW);
-        } else if (generation >= 3) {
+        } else if (generation >= COPY_GENERATION) {
             label.withStyle(ChatFormatting.GRAY);
         }
         return label;
     }
 
     @Nullable
-    public static Component getCustomTitle(@Nonnull ItemStack stack) {
+    public static Component getCustomTitle(ItemStack stack) {
         String s = stack.get(Items.CANVAS_TITLE);
         if (!StringUtil.isNullOrEmpty(s)) {
             return Component.literal(s);
@@ -143,9 +148,8 @@ public class ItemCanvas extends HangingEntityItem {
         return null;
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
         if (comp != null) {
             return comp;
@@ -155,23 +159,23 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
-    //public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
         if (pixels != null) {
             String author = stack.get(Items.CANVAS_AUTHOR);
 
-            if (tooltipDisplay.shows(Items.CANVAS_AUTHOR) && !StringUtil.isNullOrEmpty(author)) {
-                consumer.accept(Component.translatable("canvas.byAuthor", author));
+            if (!StringUtil.isNullOrEmpty(author)) {
+                tooltipComponents.accept(Component.translatable("canvas.byAuthor", author));
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
-            // generation = 0 means empty, 1 means original, more means copy
-            if(tooltipDisplay.shows(Items.CANVAS_GENERATION) && generation > 0){
-                consumer.accept((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+            // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
+            if (generation > 0) {
+                tooltipComponents.accept(Component.translatable("canvas.generation." + (generation - 1))
+                        .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
-        }else if(tooltipDisplay.shows(Items.CANVAS_AUTHOR)){
-            consumer.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
+        } else {
+            tooltipComponents.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -179,6 +183,19 @@ public class ItemCanvas extends HangingEntityItem {
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public boolean isFoil(ItemStack stack) {
         return stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0;
+    }
+
+    public static final int SIGNED_STACK_SIZE = 16;
+
+    /**
+     * Signed canvases that are the same can be stacked
+     */
+    public static void updateStackSize(ItemStack stack) {
+        if (stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+            stack.set(DataComponents.MAX_STACK_SIZE, SIGNED_STACK_SIZE);
+        } else if (stack.getOrDefault(DataComponents.MAX_STACK_SIZE, 1) > 1) {
+            stack.remove(DataComponents.MAX_STACK_SIZE);
+        }
     }
 
     public int getWidth() {
@@ -193,11 +210,25 @@ public class ItemCanvas extends HangingEntityItem {
         return canvasType;
     }
 
+    @Override
     protected boolean mayPlace(Player playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
         if (canvasType == CanvasType.SMALL) {
             return Level.isInSpawnableBounds(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         } else {
             return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
+    }
+
+    public static String generateName(Player player) {
+        return player.getUUID() + "_" + System.currentTimeMillis() / 100;
+    }
+
+    public static Item canvasItemFor(CanvasType type, boolean glass) {
+        return switch (type) {
+            case SMALL -> glass ? Items.ITEM_CANVAS_GLASS : Items.ITEM_CANVAS;
+            case LONG -> glass ? Items.ITEM_CANVAS_GLASS_LONG : Items.ITEM_CANVAS_LONG;
+            case TALL -> glass ? Items.ITEM_CANVAS_GLASS_TALL : Items.ITEM_CANVAS_TALL;
+            case LARGE -> glass ? Items.ITEM_CANVAS_GLASS_LARGE : Items.ITEM_CANVAS_LARGE;
+        };
     }
 }

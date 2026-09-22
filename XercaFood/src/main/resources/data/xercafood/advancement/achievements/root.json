@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/root.json
+      "item": "xercafood:item_apple_cupcake"
+========
+      "id": "xercafood:apple_cupcake"
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/root.json
+    },
+    "title": {
+      "translate": "advancements.xercafood.achievements.root.title"
+    },
+    "description": {
+      "translate": "advancements.xercafood.achievements.root.description"
+    },
+<<<<<<<< HEAD:XercaFood/src/main/resources/data/xercafood/advancements/achievements/root.json
+    "background": "xercafood:textures/block/apple_pie_top.png",
+========
+    "background": "xercafood:block/apple_pie_top",
+>>>>>>>> upstream/fabric-1.21.11:XercaFood/src/main/resources/data/xercafood/advancement/achievements/root.json
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+      }
+    }
+  }
+}
+

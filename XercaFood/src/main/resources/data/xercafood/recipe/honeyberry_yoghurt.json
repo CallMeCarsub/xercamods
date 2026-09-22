@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:sweet_berries",
+    "xercafood:yoghurt",
+    "minecraft:honey_bottle",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "xercafood:honeyberry_yoghurt"
+  }
+}

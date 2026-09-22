@@ -1,0 +1,23 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.xercatools.enchantment_dashing"
+  },
+  "effects": {},
+  "exclusive_set": "#xercatools:exclusive_set/warhammer_strike",
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 9
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 9
+  },
+  "primary_items": "#xercatools:warhammer",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#xercatools:warhammer",
+  "weight": 5
+}
