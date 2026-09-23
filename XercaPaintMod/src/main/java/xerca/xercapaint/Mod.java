@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 public class Mod implements ModInitializer {
-    public static final String MODID = "xercapaint";
-    public static final Logger LOGGER = LogManager.getLogger(MODID);
+    public static final String MOD_ID = "xercapaint";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {

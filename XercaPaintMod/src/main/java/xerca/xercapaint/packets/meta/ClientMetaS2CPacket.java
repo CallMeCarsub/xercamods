@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 import xerca.xercapaint.Mod;
 
 public class ClientMetaS2CPacket implements CustomPacketPayload {
-    public static final Identifier PAYLOAD_ID = Identifier.fromNamespaceAndPath(Mod.MODID, "hello");
+    public static final Identifier PAYLOAD_ID = Identifier.fromNamespaceAndPath(Mod.MOD_ID, "hello");
     public static final CustomPacketPayload.Type<ClientMetaS2CPacket> PACKET_ID = new CustomPacketPayload.Type<>(PAYLOAD_ID);
     public static final StreamCodec<FriendlyByteBuf, ClientMetaS2CPacket> PACKET_CODEC = StreamCodec.unit(new ClientMetaS2CPacket());
 

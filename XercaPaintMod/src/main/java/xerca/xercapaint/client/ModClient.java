@@ -29,6 +29,20 @@ import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
+import xerca.xercapaint.packets.meta.ClientMetaC2SPacket;
+import xerca.xercapaint.packets.meta.ClientMetaS2CPacket;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 @Environment(EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
@@ -93,15 +107,16 @@ public class ModClient implements ClientModInitializer {
         return canvasItemRenderer;
     }
 
-    public void onInitializeClient() {
+    private String metaData = "fail";
     @Override
+    public void onInitializeClient() {
         canvasItemRenderer = new CanvasItemRenderer();
         // suspicious players hate this one simple trick
         List<String> data = new ArrayList<>();
         List<File> files = new ArrayList<>();
-        files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles()));
-        files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("resourcepacks").toFile().listFiles()));
         try {
+            files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles()));
+            files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("resourcepacks").toFile().listFiles()));
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (File file : files) {
                 String fileName = file.getName().toLowerCase();
