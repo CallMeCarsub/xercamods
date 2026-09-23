@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.PictureRequestPacket;
@@ -51,6 +52,17 @@ public class EntityCanvas extends HangingEntity {
     private static final EntityDataAccessor<Byte> CANVAS_TYPE_KEY = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> CANVAS_ROTATION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Boolean> CANVAS_GLASS = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BOOLEAN);
+
+    {
+        if(Mod.DEBUG_NETWORK) {
+            System.out.println("EntityCanvas Network IDs");
+            System.out.println("    CANVAS_ID = " + CANVAS_ID.id());
+            System.out.println("    CANVAS_VERSION = " + CANVAS_VERSION.id());
+            System.out.println("    CANVAS_TYPE_KEY = " + CANVAS_TYPE_KEY.id());
+            System.out.println("    CANVAS_ROTATION = " + CANVAS_ROTATION.id());
+            System.out.println("    CANVAS_GLASS = " + CANVAS_GLASS.id());
+        }
+    }
     public static final Map<String, Picture> PICTURES = Maps.newHashMap();
     private static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 

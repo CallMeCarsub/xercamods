@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 public class Mod implements ModInitializer {
+    public static final boolean DEBUG_NETWORK = false;
     public static final String MOD_ID = "xercapaint";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
