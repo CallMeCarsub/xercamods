@@ -3,6 +3,7 @@ package xerca.xercapaint.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -20,6 +21,8 @@ import xerca.xercapaint.SoundEvents;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_ALT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT_ALT;
 import static xerca.xercapaint.PaletteUtil.EMPTINESS_COLOR;
 
 public abstract class BasePalette extends Screen {
@@ -64,6 +67,24 @@ public abstract class BasePalette extends Screen {
             new PaletteUtil.Color(0xFFC74EBD),
             new PaletteUtil.Color(0xFFF9801D),
             new PaletteUtil.Color(0xFFF9FFFE)
+    };
+    final static PaletteUtil.Color[] basicColorsMax = {
+            new PaletteUtil.Color(0xFF020202),
+            new PaletteUtil.Color(0xFFff0000),
+            new PaletteUtil.Color(0xFFb3ff00),
+            new PaletteUtil.Color(0xFFff6a00),
+            new PaletteUtil.Color(0xFF0000ff),
+            new PaletteUtil.Color(0xFFa600ff),
+            new PaletteUtil.Color(0xFF00ffff),
+            new PaletteUtil.Color(0xFF9D9D9D),
+            new PaletteUtil.Color(0xFF474747),
+            new PaletteUtil.Color(0xFFff00ff),
+            new PaletteUtil.Color(0xFF00ff00),
+            new PaletteUtil.Color(0xFFffff00),
+            new PaletteUtil.Color(0xFF00bfff),
+            new PaletteUtil.Color(0xFFff00bf),
+            new PaletteUtil.Color(0xFFff7300),
+            new PaletteUtil.Color(0xFFFFFFFF)
     };
     final static Vec2[] basicColorCenters = {
             new Vec2(23.5f, 172.5f),
@@ -114,6 +135,8 @@ public abstract class BasePalette extends Screen {
     boolean paletteComplete = false;
     boolean isCarryingPalette = false;
 
+    private boolean altActive = false;
+
     BasePalette(Component titleIn, ItemStack paletteStack) {
         super(titleIn);
         this.basicColorFlags = new boolean[16];
@@ -138,6 +161,24 @@ public abstract class BasePalette extends Screen {
         }
     }
 
+    @Override
+    public boolean keyReleased(KeyEvent keyEvent) {
+        int keyCode = keyEvent.key();
+        if(keyCode == GLFW_KEY_LEFT_ALT || keyCode == GLFW_KEY_RIGHT_ALT){
+            altActive = false;
+        }
+        return super.keyReleased(keyEvent);
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent keyEvent) {
+        int keyCode = keyEvent.key();
+        if(keyCode == GLFW_KEY_LEFT_ALT || keyCode == GLFW_KEY_RIGHT_ALT){
+            altActive = true;
+        }
+        return super.keyPressed(keyEvent);
+    }
+
     protected void superRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
@@ -152,7 +193,7 @@ public abstract class BasePalette extends Screen {
             int y = (int) paletteY + (int) basicColorCenters[i].y;
             int r = (int) basicColorRadius;
             if (basicColorFlags[i]) {
-                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, basicColors[i].rgbVal());
+                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, altActive ? basicColorsMax[i].rgbVal() : basicColors[i].rgbVal());
 
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize, 256, 256);
             } else {
@@ -208,7 +249,7 @@ public abstract class BasePalette extends Screen {
             for (int i = 0; i < basicColorCenters.length; i++) {
                 if (basicColorFlags[i] && sqrDist(clickVec, basicColorCenters[i]) <= sqrBasicRadius) {
                     if (mouseButton == 0) {
-                        carriedColor = currentColor = basicColors[i];
+                        carriedColor = currentColor = altActive ? basicColorsMax[i] : basicColors[i];
                         setCarryingColor();
                         playSound(SoundEvents.MIX, 0.6f);
                     }
